@@ -14,10 +14,12 @@
             </div>
             <div class="col-md-3">
                 <select name="filter_type" class="form-control">
-                    <option value="all" {% if request.args.get('filter_type') == 'all' %}selected{% endif %}>All</option>
-                    <option value="jobs" {% if request.args.get('filter_type') == 'jobs' %}selected{% endif %}>Jobs</option>
-                    <option value="properties" {% if request.args.get('filter_type') == 'properties' %}selected{% endif %}>Properties</option>
-                </select>
+    <option value="all" {{ 'selected' if request.args.get('filter_type') == 'all' else '' }}>All</option>
+    <option value="jobs" {{ 'selected' if request.args.get('filter_type') == 'jobs' else '' }}>Jobs</option>
+    <option value="properties" {{ 'selected' if request.args.get('filter_type') == 'properties' else '' }}>Properties</option>
+</select>
+
+
             </div>
             <div class="col-md-3">
                 <button type="submit" class="btn btn-primary w-100">Search</button>
@@ -29,24 +31,4 @@
     <h2 class="mt-4">Latest Jobs</h2>
     <div class="list-group">
         {% for job in jobs %}
-            <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ job.title }}</strong> at {{ job.company }} - {{ job.location }}
-            </a>
-        {% else %}
-            <p class="text-muted">No jobs found.</p>
-        {% endfor %}
-    </div>
-
-    <!-- Latest Properties -->
-    <h2 class="mt-4">Latest Properties</h2>
-    <div class="list-group">
-        {% for property in properties %}
-            <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ property.title }}</strong> - {{ property.location }} - <span class="text-success">{{ property.price }}</span>
-            </a>
-        {% else %}
-            <p class="text-muted">No properties found.</p>
-        {% endfor %}
-    </div>
-</div>
-{% endblock %}
+            <a hre
