@@ -6,6 +6,26 @@
 <div class="container">
     <h1 class="mt-4 text-center">Welcome to TanzaniaHub</h1>
 
+    <!-- Search & Filter Form -->
+    <form method="GET" action="{{ url_for('home') }}" class="mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="query" class="form-control" placeholder="Search jobs or properties..." value="{{ request.args.get('query', '') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="filter_type" class="form-control">
+                    <option value="all" {% if request.args.get('filter_type') == 'all' %}selected{% endif %}>All</option>
+                    <option value="jobs" {% if request.args.get('filter_type') == 'jobs' %}selected{% endif %}>Jobs</option>
+                    <option value="properties" {% if request.args.get('filter_type') == 'properties' %}selected{% endif %}>Properties</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Latest Jobs -->
     <h2 class="mt-4">Latest Jobs</h2>
     <div class="list-group">
         {% for job in jobs %}
@@ -17,11 +37,12 @@
         {% endfor %}
     </div>
 
+    <!-- Latest Properties -->
     <h2 class="mt-4">Latest Properties</h2>
     <div class="list-group">
         {% for property in properties %}
             <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ property.title }}</strong> - {{ property.location }} - <span class="text-danger">{{ property.price }}</span>
+                <strong>{{ property.title }}</strong> - {{ property.location }} - <span class="text-success">{{ property.price }}</span>
             </a>
         {% else %}
             <p class="text-muted">No properties found.</p>
