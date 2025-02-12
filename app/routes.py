@@ -9,24 +9,32 @@ from app.forms import JobForm, PropertyForm, RegisterForm, LoginForm
 from flask import request
 
 
-@app.route('/', methods=['GET'])
-def home():
-    # Get search query and filters from URL parameters
-    search_query = request.args.get('search', '')
-    filter_location = request.args.get('location', '')
-    filter_company = request.args.get('company', '')
-    filter_salary = request.args.get('salary', '')
+from flask import render_template, request
+from app import app, db
+from app.models import Job, Property
 
-    # Filter Jobs based on search inputs
-    jobs_query = Job.query
-    if search_query:
-        jobs_query = jobs_query.filter(Job.title.ilike(f"%{search_query}%") | Job.company.ilike(f"%{search_query}%"))
-    if filter_location:
-        jobs_query = jobs_query.filter(Job.location.ilike(f"%{filter_location}%"))
-    if filter_company:
-        jobs_query = jobs_query.filter(Job.company.ilike(f"%{filter_company}%"))
-    if filter_salary:
-        jobs_query = jobs_query.filter(Job.salary.ilike(f"%{filter_salary}%"))
+@app.route('/')
+def home():
+    query = request.args.get('query', '')
+    filter_type = request.args.get('filter_type', 'all')
+
+    # Filtering logic based on search query & selected filter
+    if query:
+        if filter_type == "jobs":
+            jobs = Job.query.filter(Job.title.ilike(f"%{query}%")).all()
+            properties = []
+        elif filter_type == "properties":
+            properties = Property.query.filter(Property.title.ilike(f"%{query}%")).all()
+            jobs = []
+        else:
+            jobs = Job.query.filter(Job.title.ilike(f"%{query}%")).all()
+            properties = Property.query.filter(Property.title.ilike(f"%{query}%")).all()
+    else:
+        jobs = Job.query.all()
+        properties = Property.query.all()
+
+    return render_template('index.html', jobs=jobs, properties=properties)
+
 
     jobs = jobs_query.all()
 

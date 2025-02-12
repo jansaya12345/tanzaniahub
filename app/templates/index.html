@@ -6,23 +6,25 @@
 <div class="container">
     <h1 class="mt-4 text-center">Welcome to TanzaniaHub</h1>
 
-    <!-- Job Search Section -->
     <h2 class="mt-4">Latest Jobs</h2>
     <div class="list-group">
         {% for job in jobs %}
             <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ job.title }}</strong> at <span class="text-primary">{{ job.company }}</span> - <span class="text-muted">{{ job.location }}</span>
+                <strong>{{ job.title }}</strong> at {{ job.company }} - {{ job.location }}
             </a>
+        {% else %}
+            <p class="text-muted">No jobs found.</p>
         {% endfor %}
     </div>
 
-    <!-- Property Listings Section -->
     <h2 class="mt-4">Latest Properties</h2>
     <div class="list-group">
         {% for property in properties %}
             <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ property.title }}</strong> - <span class="text-success">{{ property.location }}</span> - <span class="fw-bold text-danger">{{ property.price }}</span>
+                <strong>{{ property.title }}</strong> - {{ property.location }} - <span class="text-danger">{{ property.price }}</span>
             </a>
+        {% else %}
+            <p class="text-muted">No properties found.</p>
         {% endfor %}
     </div>
 </div>
