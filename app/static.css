@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 800px;
+}
+
+h1, h2 {
+    color: #343a40;
+    text-align: center;
+}
+
+.list-group-item {
+    transition: all 0.3s;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.02);
+}
+
+.btn {
+    transition: all 0.3s;
+}
