@@ -16,12 +16,11 @@ from app.models import Job, Property
 @app.route('/')
 def home():
     query = request.args.get('query')
-    filter_type = request.args.get('filter_type')
-
-    jobs = Job.query.filter(Job.title.contains(query) if query else True).all()
-    properties = Property.query.filter(Property.title.contains(query) if query else True).all()
-
+    jobs = Job.query.all()
+    properties = Property.query.all()
     return render_template('index.html', jobs=jobs, properties=properties)
+
+
 
 
     jobs = jobs_query.all()
@@ -179,3 +178,4 @@ def delete_property(property_id):
     db.session.commit()
     flash("Property deleted successfully!", "success")
     return redirect(url_for('dashboard'))
+
