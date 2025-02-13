@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - TanzaniaHub{% endblock %}
+{% block title %}Register - TanzaniaHub{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4 text-center">Welcome to TanzaniaHub</h1>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">TanzaniaHub</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <!-- Search & Filter Form -->
+<div class="container mt-5">
+    <h1 class="text-center">Welcome to TanzaniaHub</h1>
+
     <form method="GET" action="{{ url_for('home') }}" class="mt-4">
         <div class="row">
             <div class="col-md-6">
@@ -14,9 +29,9 @@
             </div>
             <div class="col-md-3">
                 <select name="filter_type" class="form-control">
-                    <option value="all" {% if request.args.get('filter_type') == 'all' %}selected{% endif %}>All</option>
-                    <option value="jobs" {% if request.args.get('filter_type') == 'jobs' %}selected{% endif %}>Jobs</option>
-                    <option value="properties" {% if request.args.get('filter_type') == 'properties' %}selected{% endif %}>Properties</option>
+                    <option value="all" {{ 'selected' if request.args.get('filter_type') == 'all' else '' }}>All</option>
+                    <option value="jobs" {{ 'selected' if request.args.get('filter_type') == 'jobs' else '' }}>Jobs</option>
+                    <option value="properties" {{ 'selected' if request.args.get('filter_type') == 'properties' else '' }}>Properties</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -25,25 +40,29 @@
         </div>
     </form>
 
-    <!-- Jobs Section -->
     <h2 class="mt-4">Latest Jobs</h2>
-    <div class="list-group">
+    <div class="row">
         {% for job in jobs %}
-            <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ job.title }}</strong> at {{ job.company }} - {{ job.location }}
-            </a>
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <p class="card-text">{{ job.company }} - {{ job.location }}</p>
+                </div>
+            </div>
         {% else %}
             <p class="text-muted">No jobs available.</p>
         {% endfor %}
     </div>
 
-    <!-- Properties Section -->
     <h2 class="mt-4">Latest Properties</h2>
-    <div class="list-group">
+    <div class="row">
         {% for property in properties %}
-            <a href="#" class="list-group-item list-group-item-action">
-                <strong>{{ property.title }}</strong> - {{ property.location }} - {{ property.price }}
-            </a>
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h5 class="card-title">{{ property.title }}</h5>
+                    <p class="card-text">{{ property.location }} - ${{ property.price }}</p>
+                </div>
+            </div>
         {% else %}
             <p class="text-muted">No properties available.</p>
         {% endfor %}
