@@ -15,23 +15,11 @@ from app.models import Job, Property
 
 @app.route('/')
 def home():
-    query = request.args.get('query', '')
-    filter_type = request.args.get('filter_type', 'all')
+    query = request.args.get('query')
+    filter_type = request.args.get('filter_type')
 
-    # Filtering logic based on search query & selected filter
-    if query:
-        if filter_type == "jobs":
-            jobs = Job.query.filter(Job.title.ilike(f"%{query}%")).all()
-            properties = []
-        elif filter_type == "properties":
-            properties = Property.query.filter(Property.title.ilike(f"%{query}%")).all()
-            jobs = []
-        else:
-            jobs = Job.query.filter(Job.title.ilike(f"%{query}%")).all()
-            properties = Property.query.filter(Property.title.ilike(f"%{query}%")).all()
-    else:
-        jobs = Job.query.all()
-        properties = Property.query.all()
+    jobs = Job.query.filter(Job.title.contains(query) if query else True).all()
+    properties = Property.query.filter(Property.title.contains(query) if query else True).all()
 
     return render_template('index.html', jobs=jobs, properties=properties)
 
