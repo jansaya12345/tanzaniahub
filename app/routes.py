@@ -13,28 +13,20 @@ from flask import render_template, request
 from app import app, db
 from app.models import Job, Property
 
+
 @app.route('/')
 def home():
     query = request.args.get('query')
-    jobs = Job.query.all()
-    properties = Property.query.all()
+
+    # Simple search filtering
+    if query:
+        jobs = Job.query.filter(Job.title.ilike(f"%{query}%")).all()
+        properties = Property.query.filter(Property.title.ilike(f"%{query}%")).all()
+    else:
+        jobs = Job.query.all()
+        properties = Property.query.all()
+
     return render_template('index.html', jobs=jobs, properties=properties)
-
-
-
-
-    jobs = jobs_query.all()
-
-    # Filter Properties based on search inputs
-    properties_query = Property.query
-    if search_query:
-        properties_query = properties_query.filter(Property.title.ilike(f"%{search_query}%"))
-    if filter_location:
-        properties_query = properties_query.filter(Property.location.ilike(f"%{filter_location}%"))
-
-    properties = properties_query.all()
-
-    return render_template('index.html', jobs=jobs, properties=properties, search_query=search_query)
 
 
 @app.route('/post-job', methods=['GET', 'POST'])
@@ -98,17 +90,20 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user:
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
             flash('Email already registered. Please log in.', 'danger')
             return redirect(url_for('login'))
 
-        new_user = User(username=form.username.data, email=form.email.data)
+        new_user = User(
+            username=form.username.data,
+            email=form.email.data
+        )
         new_user.set_password(form.password.data)
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Registration successful! You can now log in.', 'success')
+        flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
@@ -119,7 +114,6 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -128,8 +122,7 @@ def login():
             flash('Login successful!', 'success')
             return redirect(url_for('home'))
         else:
-            flash('Login failed. Check email and password.', 'danger')
-
+            flash('Invalid credentials. Please try again.', 'danger')
     return render_template('login.html', form=form)
 
 
@@ -159,7 +152,6 @@ def delete_job(job_id):
     if job.user_id != current_user.id:
         flash("You don't have permission to delete this job!", "danger")
         return redirect(url_for('dashboard'))
-
     db.session.delete(job)
     db.session.commit()
     flash("Job deleted successfully!", "success")
@@ -179,3 +171,24 @@ def delete_property(property_id):
     flash("Property deleted successfully!", "success")
     return redirect(url_for('dashboard'))
 
+
+class EditProfileForm:
+    pass
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.bio = form.bio.data
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.bio.data = current_user.bio
+    return render_template('profile.html', form=form)

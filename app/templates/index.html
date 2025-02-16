@@ -1,55 +1,57 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - TanzaniaHub{% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Welcome to TanzaniaHub</h1>
+<!-- Welcome Message -->
+<div class="alert alert-primary text-center mt-4">
+    <h3>👋 Welcome to TanzaniaHub – Your Gateway to Opportunities!</h3>
+</div>
 
-    <form method="GET" action="{{ url_for('home') }}" class="mb-5">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <input type="text" name="query" class="form-control" placeholder="Search jobs or properties">
-            </div>
-            <div class="col-md-3">
-                <select name="filter_type" class="form-select">
-                    <option value="all" {{ 'selected' if request.args.get('filter_type') == 'all' else '' }}>All</option>
-                    <option value="jobs" {{ 'selected' if request.args.get('filter_type') == 'jobs' else '' }}>Jobs</option>
-                    <option value="properties" {{ 'selected' if request.args.get('filter_type') == 'properties' else '' }}>Properties</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">Search</button>
+<!-- Search Form -->
+<form method="GET" action="{{ url_for('home') }}" class="mb-5">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <input type="text" name="query" class="form-control" placeholder="Search jobs or properties">
+        </div>
+        <div class="col-md-3">
+            <select name="filter_type" class="form-select">
+                <option value="all" {{ 'selected' if request.args.get('filter_type') == 'all' else '' }}>All</option>
+                <option value="jobs" {{ 'selected' if request.args.get('filter_type') == 'jobs' else '' }}>Jobs</option>
+                <option value="properties" {{ 'selected' if request.args.get('filter_type') == 'properties' else '' }}>Properties</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </div>
+</form>
+
+<!-- Latest Jobs Section -->
+<h2 class="mb-3">💼 Latest Jobs</h2>
+<div class="row">
+    {% for job in jobs %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100 p-3">
+                <h5 class="card-title">{{ job.title }}</h5>
+                <p class="card-text">{{ job.company }} - {{ job.location }}</p>
             </div>
         </div>
-    </form>
+    {% else %}
+        <p class="text-muted">No jobs available.</p>
+    {% endfor %}
+</div>
 
-    <h2 class="mb-3">Latest Jobs</h2>
-    <div class="row">
-        {% for job in jobs %}
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-sm h-100 p-3">
-                    <h5 class="card-title">{{ job.title }}</h5>
-                    <p class="card-text">{{ job.company }} - {{ job.location }}</p>
-                </div>
+<!-- Latest Properties Section -->
+<h2 class="mt-5 mb-3">🏡 Latest Properties</h2>
+<div class="row">
+    {% for property in properties %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100 p-3">
+                <h5 class="card-title">{{ property.title }}</h5>
+                <p class="card-text">{{ property.location }} - ${{ property.price }}</p>
             </div>
-        {% else %}
-            <p class="text-muted">No jobs available.</p>
-        {% endfor %}
-    </div>
-
-    <h2 class="mt-5 mb-3">Latest Properties</h2>
-    <div class="row">
-        {% for property in properties %}
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-sm h-100 p-3">
-                    <h5 class="card-title">{{ property.title }}</h5>
-                    <p class="card-text">{{ property.location }} - ${{ property.price }}</p>
-                </div>
-            </div>
-        {% else %}
-            <p class="text-muted">No properties available.</p>
-        {% endfor %}
-    </div>
+        </div>
+    {% else %}
+        <p class="text-muted">No properties available.</p>
+    {% endfor %}
 </div>
 {% endblock %}
