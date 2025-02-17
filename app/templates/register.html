@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block title %}Register - TanzaniaHub{% endblock %}
 
 {% block content %}
@@ -7,16 +8,20 @@
     <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
         <div class="mb-3">
-            {{ form.username.label }} {{ form.username(class="form-control", placeholder="Username") }}
+            {{ form.username.label }}
+            {{ form.username(class="form-control", placeholder="Enter Username") }}
         </div>
         <div class="mb-3">
-            {{ form.email.label }} {{ form.email(class="form-control", placeholder="Email") }}
+            {{ form.email.label }}
+            {{ form.email(class="form-control", placeholder="Enter Email") }}
         </div>
         <div class="mb-3">
-            {{ form.password.label }} {{ form.password(class="form-control", placeholder="Password") }}
+            {{ form.password.label }}
+            {{ form.password(class="form-control", placeholder="Enter Password") }}
         </div>
         <div class="mb-3">
-            {{ form.confirm_password.label }} {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
+            {{ form.confirm_password.label }}
+            {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
         </div>
         <button type="submit" class="btn btn-primary w-100">Register</button>
     </form>

@@ -13,7 +13,29 @@ from flask import render_template, request
 from app import app, db
 from app.models import Job, Property
 
+from flask import render_template, redirect, url_for, flash, request
+from flask_login import login_user, logout_user, current_user, login_required
+from app import app, db
+from app.forms import RegisterForm, LoginForm
+from app.models import User
 
+
+# Register Route
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Registration successful! You can now log in.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('register.html', form=form)
 @app.route('/')
 def home():
     query = request.args.get('query')
@@ -53,10 +75,8 @@ def post_job():
 
     return render_template('post_job.html', form=form)
 
-
 # Route for posting a property (only for logged-in users)
 from flask_login import current_user
-
 
 @app.route('/post-property', methods=['GET', 'POST'])
 @login_required
@@ -80,34 +100,6 @@ def post_property():
         return redirect(url_for('home'))
 
     return render_template('post_property.html', form=form)
-
-
-# User Registration Route
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-
-    form = RegisterForm()
-    if form.validate_on_submit():
-        existing_user = User.query.filter_by(email=form.email.data).first()
-        if existing_user:
-            flash('Email already registered. Please log in.', 'danger')
-            return redirect(url_for('login'))
-
-        new_user = User(
-            username=form.username.data,
-            email=form.email.data
-        )
-        new_user.set_password(form.password.data)
-        db.session.add(new_user)
-        db.session.commit()
-
-        flash('Registration successful! Please log in.', 'success')
-        return redirect(url_for('login'))
-
-    return render_template('register.html', form=form)
-
 
 # User Login Route
 @app.route('/login', methods=['GET', 'POST'])
@@ -174,7 +166,6 @@ def delete_property(property_id):
 
 class EditProfileForm:
     pass
-
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
